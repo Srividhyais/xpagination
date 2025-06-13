@@ -3,83 +3,84 @@ import "./App.css";
 const ITEMS_PER_PAGE = 10;
 
 function App() {
-  const [data, setData] = useState([]);
-    const [page, setPage] = useState(0);
-    const [filteredData, setFilteredData] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [page, setPage] = useState(0);
+  console.log("Current page is:", page);
 
-    const fetchData = async() => {
-        try{
-            const apiData = await fetch("https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json");
-            const actualData = await apiData.json();
-            setData(actualData);
-        }catch(err){
-            console.log("failed to fetch data", err);
-            alert("failed to fetch data");
+
+  useEffect(() => {
+    fetch(
+      "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
         }
-    }
+        return res.json();
+      })
+      .then((data) => setEmployees(data))
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        alert("failed to fetch data");
+      });
+  }, []);
 
-    const updateFilterData = () => {
-        const updateData = data.filter((newData) => {
-            if (newData.id > page * 10 && newData.id <= (page + 1) * 10) {
-                return newData;
-            }
-            return false; 
-        });
-        setFilteredData(updateData);
-    }
-    
-    const decrement = () => {
-        if(page >= 1){
-            setPage(page - 1);
-        }
-    }
+  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+  const paginatedEmployees = employees.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
-    const increment = () => {
-        if(data[(page+1)*10]){
-            setPage(page + 1);
-        }
-    }
+  const totalPages = Math.ceil(employees.length / ITEMS_PER_PAGE);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+  const goToNextPage = () => {
+    setPage((prev) => Math.min(prev + 1, totalPages));
+  };
 
-    useEffect(() => {
-        updateFilterData();
-    }, [data, page]);
+  const goToPreviousPage = () => {
+    setPage((prev) => Math.max(prev - 1, 1));
+  };
+
 
   return (
-    <>
-        <h1>Employee Data Table</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                </tr>
-            </thead>  
-            <tbody>  
-                {filteredData.map((item) => {
-                    return(  
-                        <tr key={item.id}>
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td>{item.email}</td>
-                        <td>{item.role}</td>
-                    </tr>
-                    )
-                })}
-            </tbody>
-        </table>
-        <div>
-            <button onClick={decrement}>Previous</button>
-            <button>{page + 1}</button>
-            <button onClick={increment}>Next</button>
-        </div>
-    </>
-  )
+  <div className="container">
+    <h1>Employee Data Table</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {paginatedEmployees.map((emp) => (
+          <tr key={emp.id}>
+            <td>{emp.id}</td>
+            <td>{emp.name}</td>
+            <td>{emp.email}</td>
+            <td>{emp.role}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+  <div className="pagination">
+  <button onClick={goToPreviousPage}>
+    Previous
+  </button>
+
+  <p>{page}</p>
+
+  <button onClick={goToNextPage} disabled={page === totalPages}>
+    Next
+  </button>
+</div>
+
+  </div>
+);
 }
 
 export default App;
