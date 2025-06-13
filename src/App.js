@@ -65,17 +65,17 @@ function App() {
       </tbody>
     </table>
 
-    <div className="pagination">
+  <div className="pagination">
   <button onClick={goToPreviousPage}>
     Previous
   </button>
 
-  <span className="current-page">{page}</span>
+  <span>{page}</span> {/* <--- Cypress looks for this */}
 
   <button onClick={goToNextPage} disabled={page === totalPages}>
     Next
   </button>
-  </div>
+</div>
 
   </div>
 );
