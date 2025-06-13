@@ -5,6 +5,8 @@ const ITEMS_PER_PAGE = 10;
 function App() {
   const [employees, setEmployees] = useState([]);
   const [page, setPage] = useState(1);
+  console.log("Current page is:", page);
+
 
   useEffect(() => {
     fetch(
@@ -70,7 +72,7 @@ function App() {
     Previous
   </button>
 
-  <p>{page}</p>
+  <div>{page}</div>
 
   <button onClick={goToNextPage} disabled={page === totalPages}>
     Next
