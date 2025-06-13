@@ -70,7 +70,7 @@ function App() {
     Previous
   </button>
 
-  <button> {page} </button>
+  <span> {page} </span>
 
   <button onClick={goToNextPage} disabled={page === totalPages}>
     Next
