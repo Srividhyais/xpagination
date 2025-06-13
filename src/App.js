@@ -31,17 +31,14 @@ function App() {
 
   const totalPages = Math.ceil(employees.length / ITEMS_PER_PAGE);
 
-  const goToPreviousPage = () => {
-    if (page > 1) {
-      setPage((prev) => prev - 1);
-    }
+  const goToNextPage = () => {
+    setPage((prev) => Math.min(prev + 1, totalPages));
   };
 
-  const goToNextPage = () => {
-    if (page < totalPages) {
-      setPage((prev) => prev + 1);
-    }
+  const goToPreviousPage = () => {
+    setPage((prev) => Math.max(prev - 1, 1));
   };
+
 
   return (
   <div className="container">
