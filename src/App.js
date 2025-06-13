@@ -70,7 +70,7 @@ function App() {
     Previous
   </button>
 
-  <span>{page}</span> {/* <--- Cypress looks for this */}
+  <button> {page} </button>
 
   <button onClick={goToNextPage} disabled={page === totalPages}>
     Next
